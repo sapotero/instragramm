@@ -37,13 +37,37 @@ module.exports = function(app, io){
               req.io.emit('total', {})
           })
 
-          // Send the client html.
+          //Читаем фотку из базы по _id:
+          //Для теста http://dev.hardev.ru:30030/photo/563bd016f245838248cf82eb
+          app.get('/photo/:id', function  (req, res) {
+            // body...
+            console.log('/photo/'+req.params.id);
+            res.set('Cache-Control', 'public, max-age=31557600');
+            var readstream = gfs.createReadStream({
+              _id: req.params.id
+            });
+
+            readstream.on('error', function (error) {
+              console.log("Caught", error);
+              res.writeHead(200, {'content-type': 'text/plain'});
+              res.write('Error: not found\n\n');
+            });
+
+            if ( readstream instanceof Error ) {
+              // handle the error safely
+              console.log('fack up', result)
+            }
+
+            // console.log(readstream);
+
+            readstream.pipe(res);
+          })
+
+
           app.get('/', function(req, res) {
               console.log('/');
               res.sendfile(__dirname + '/index.html')
           })
-
-
 
           app.post('/upload', function(req, res) {
               var fstream;
@@ -56,12 +80,11 @@ module.exports = function(app, io){
               console.log("CAM: "  + token);
               console.log("CAM: "  + datetime);
 
-              console.log(req.files);
-
              //  var a = req.pipe(req.busboy);
              req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
                   console.log("Uploading: " + filename); 
                   // fstream = fs.createWriteStream(__dirname + '/files/' + filename);
+                  // console.log("createWriteStream " + filename); 
 
                   var writestream = gfs.createWriteStream({
                       filename: filename,
@@ -69,18 +92,18 @@ module.exports = function(app, io){
                       chunkSize: 1024*4,
                       content_type: mimetype,
                       root: "fs",
-                       metadata: {camId:camId}
+                      metadata: {camid: camId}
                   });
-                  console.log("file.pipe")
+
                   file.pipe(writestream);
 
                   writestream.on('close', function () {
+                    req.io.broadcast('newFoto', {id: writestream.id});
                     res.redirect('back');
                   });
 
-                  var readstream = gfs.createReadStream({
-                    filename: filename
-                  });
+
+
 
               });
           });

@@ -7,4 +7,5 @@ require('./ext')(app,app.io);
 
 module.exports = app;
 
-app.listen(30030,'85.143.218.29')
+app.listen(3000,'85.143.218.29')
+// app.listen(3000,'192.168.1.54')
