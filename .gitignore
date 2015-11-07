@@ -1,0 +1,4 @@
+node_modules/coffee-script node_modules/connect-busboy node_modules/express.io node_modules/gridfs-stream node_modules/moment node_modules/mongodb node_modules/multer node_modules/save-to-mongo node_modules/streamsearch
+node_modules/**
+files/**
+images/**
