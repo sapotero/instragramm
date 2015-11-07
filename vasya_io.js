@@ -39,12 +39,29 @@ module.exports = function(app, io){
           })
 
           app.io.route('ready', function(req) {
-              
+              console.log('ready')
 
+              var filesCollection = db.collection('fs.files');
+              filesCollection.find({}).sort({uploadDate: -1}).limit(3).toArray(function (err, result) {
+                if (err) {
+                  console.log(err);
+                } else if (result.length) {
+                  console.log('Found:', result);
+                  // array.forEach(function(item) { /* etc etc */ })
+                  result.forEach(function(image){
+                    console.log(image['_id']);
+                    req.io.emit('newphoto', {
+                      photoid: image['_id'],
+                      camid: 'xx'
+                    });
+                  })
 
-              req.io.emit('showphoto', {
-                  photoid: '563c5abd87fa58e359967d76',
-                  camid: "56"
+                } else {
+                  console.log('No document(s) found with defined "find" criteria!');
+                }
+
+                result.each
+
               });
 
 

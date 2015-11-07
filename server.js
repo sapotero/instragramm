@@ -8,4 +8,4 @@ app.use(busboy({ immediate: true }));
 require('./vasya_io')(app,app.io);
 module.exports = app;
 
-app.listen(3001,'192.168.46.73')
+app.listen(3001,'127.0.0.1')

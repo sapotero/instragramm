@@ -21,7 +21,7 @@
             io.emit('ready') 
             console.log('emit ready')
             // Listen for the talk event.
-            io.on('showphoto', function(data) {
+            io.on('newphoto', function(data) {
                 console.log(data.photoid)
                 console.log(data.camid)
 
@@ -42,7 +42,7 @@
 
         <!-- Add your site or application content here -->
         <h2>Тестовая картинка из монги:</h2>
-        <img id="cam56" width="900"/>
+        <img id="camxx" width="900"/>
         <p id="textdata">..</p>
 
     </body>
