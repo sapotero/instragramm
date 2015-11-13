@@ -133,6 +133,7 @@ module.exports = function(app, io){
 
                   writestream.on('close', function () {
                     res.redirect('back');
+                    req.io.room('camupdate').broadcast('announce', {message: 'New photo in the ' + 'camupdate' + ' room. '})
                   });
 
 
