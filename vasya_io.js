@@ -101,7 +101,7 @@ module.exports = function(app, io){
               res.sendfile(__dirname + '/index.html')
           })
 
-          app.post('/upload', function(req, res) {
+          app.post('/upload', function(req, res, app) {
               var fstream;
 
               var camId    = req.headers['camid'];
