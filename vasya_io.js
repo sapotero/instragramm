@@ -42,7 +42,7 @@ module.exports = function(app, io){
               console.log('ready')
 
               var filesCollection = db.collection('fs.files');
-              filesCollection.find({}).sort({uploadDate: 1}).limit(3).toArray(function (err, result) {
+              filesCollection.find({}).sort({uploadDate: -1}).limit(1).toArray(function (err, result) {
                 if (err) {
                   console.log(err);
                 } else if (result.length) {
