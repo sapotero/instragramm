@@ -135,13 +135,14 @@ module.exports = function(app, io){
                   writestream.on('close', function (file) {
                     // console.log("File object:");
                     // console.log(file);
-                    console.log("File id in mongo: "+file["_id"] + " Metadata camid:"+file[metadata][camid])
+                    console.log("File id in mongo: "+file["_id"] + " Metadata camid:"+file['metadata']['camid'])
+                    console.log('Send announce on file upload to room....')
+                    app.io.room('camupdate').broadcast('newphoto', {camid: file['metadata']['camid'], photoid: file["_id"]})
                     res.redirect('back');
                   });
 
               });
-                  console.log('Send announce on file upload to room....')
-                  app.io.room('camupdate').broadcast('newphoto', {camid: "54", photoid: "xxxx"})
+                  
           });
       })
 };

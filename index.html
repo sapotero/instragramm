@@ -22,9 +22,7 @@
             console.log('emit ready')
             // Listen for the talk event.
             io.on('newphoto', function(data) {
-                console.log(data.photoid)
-                console.log(data.camid)
-
+                console.log("photoid: " + data.photoid + " camid: " + data.camid)
                 document.getElementById("cam"+data.camid).src="/photo/"+data.photoid;
             });
 
@@ -41,8 +39,10 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-        <h2>Тестовая картинка из монги:</h2>
-        <img id="camxx" width="900"/>
+        <h2></h2>
+        <img id="camxx" width="300"/>
+        <img id="cam1" width="300"/>
+
         <p id="textdata">..</p>
 
     </body>
