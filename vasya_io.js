@@ -101,13 +101,13 @@ module.exports = function(app, io){
               res.sendfile(__dirname + '/index.html')
           })
 
-          app.post('/upload', function(req, res, app) {
+          app.post('/upload', function(req, res) {
               var fstream;
 
               var camId    = req.headers['camid'];
               var token    = req.headers['token'];
               var datetime = req.headers['datetime'];
-              console.log(req)
+              // console.log(req)
               console.log("camid: "  + camId);
               console.log("token: "  + token);
               console.log("date: "  + moment(datetime, "YYYY:MM:DD HH:mm:ss"));
@@ -131,16 +131,17 @@ module.exports = function(app, io){
 
                   file.pipe(writestream);
 
-                  writestream.on('close', function () {
+                  
+                  writestream.on('close', function (file) {
+                    // console.log("File object:");
+                    // console.log(file);
+                    console.log("File id in mongo: "+file["_id"] + " Metadata camid:"+file[metadata][camid])
                     res.redirect('back');
                   });
 
-
-
-
-
               });
-                  app.io.room('camupdate').broadcast('announce', {message: 'New photo in the ' + 'camupdate' + ' room. '})
+                  console.log('Send announce on file upload to room....')
+                  app.io.room('camupdate').broadcast('newphoto', {camid: "54", photoid: "xxxx"})
           });
       })
 };
