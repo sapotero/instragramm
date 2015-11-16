@@ -2,3 +2,4 @@ node_modules/coffee-script node_modules/connect-busboy node_modules/express.io n
 node_modules/**
 files/**
 images/**
+.idea/**

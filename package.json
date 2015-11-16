@@ -20,10 +20,11 @@
     "connect-busboy": "0.0.2",
     "express.io": "~1.1.13",
     "gridfs-stream": "~1.1.1",
+    "jade": "^1.11.0",
+    "moment": "",
     "mongodb": "~2.0.47",
     "multer": "~1.1.0",
     "save-to-mongo": "0.0.2",
-    "streamsearch": "^0.1.2",
-    "moment":""
+    "streamsearch": "^0.1.2"
   }
 }

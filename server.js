@@ -8,4 +8,6 @@ app.use(busboy({ immediate: true }));
 require('./vasya_io')(app,app.io);
 module.exports = app;
 
-app.listen(8080)
+app.set('view engine', 'jade');
+
+app.listen(8080);
