@@ -102,6 +102,16 @@ module.exports = function(app, io){
               res.render('index', { title: 'Hey', message: 'Hello there!'});
           });
 
+
+          app.get('/cam/:id', function(req, res) {
+              var camid = req.params.id;
+              console.log('/cam/'+camid);
+              var currentdate = new Date();
+              res.render('showcam', { title: 'Фотоматериалы с камеры №'+camid, currentcamid:camid, date: currentdate.getDay() + "/"+currentdate.getMonth()
+              + "/" + currentdate.getFullYear()});
+          });
+
+
           app.post('/upload', function(req, res) {
 
               var camId    = req.headers['camid'];
