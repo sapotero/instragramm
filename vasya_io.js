@@ -3,13 +3,15 @@ module.exports = function(app, io){
   var path = require('path');
   var fs = require('fs');
   var moment = require('moment');
+
+  var inspect = require('util').inspect;
   
-  var url = 'mongodb://85.143.218.29:27017/images';
+  var url = 'mongodb://192.168.60.5:27017/images';
 
   var mongodb     = require('mongodb'),
       Grid        = require('gridfs-stream'),
       MongoClient = mongodb.MongoClient,
-      db          = new mongodb.Db( 'images', new mongodb.Server("85.143.218.29", 27017) ),
+      db          = new mongodb.Db( 'images', new mongodb.Server("192.168.60.5", 27017) ),
       gfs;
 
       db.open(function (err) {
@@ -107,11 +109,18 @@ module.exports = function(app, io){
               var camId    = req.headers['camid'];
               var token    = req.headers['token'];
               var datetime = req.headers['datetime'];
+              console.log("REQUEST!!!!!!!!!!!!!!!:");
               // console.log(req)
               console.log("camid: "  + camId);
               console.log("token: "  + token);
               console.log("date: "  + moment(datetime, "YYYY:MM:DD HH:mm:ss"));
               console.log(req.files);
+
+              req.busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
+                console.log('----->  Field [' +  fieldname + ']: value: ' + inspect(val));
+              });
+
+
 
              //  var a = req.pipe(req.busboy);
              req.busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
@@ -138,7 +147,9 @@ module.exports = function(app, io){
                     console.log("File id in mongo: "+file["_id"] + " Metadata camid:"+file['metadata']['camid'])
                     console.log('Send announce on file upload to room....')
                     app.io.room('camupdate').broadcast('newphoto', {camid: file['metadata']['camid'], photoid: file["_id"]})
-                    res.redirect('back');
+                    // res.redirect('back');
+                    res.json({"result": "ok"});
+                    res.end();
                   });
 
               });
