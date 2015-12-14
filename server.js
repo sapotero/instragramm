@@ -26,3 +26,6 @@ module.exports = app;
 
 app.listen(8080)
 
+app.set('view engine', 'jade');
+
+app.listen(8080);

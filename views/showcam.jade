@@ -1,0 +1,65 @@
+doctype html
+//if lt IE 7
+  html.no-js.lt-ie9.lt-ie8.lt-ie7  
+//if IE 7
+  html.no-js.lt-ie9.lt-ie8  
+//if IE 8
+  html.no-js.lt-ie9  
+// [if gt IE 8] <!
+html.no-js
+    // <![endif]
+    head
+        meta(charset='utf-8')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        title
+        meta(name='description', content='')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+    body
+        // jQuery (necessary for Bootstrap's JavaScript plugins)
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+        // Include all compiled plugins (below), or include individual files as needed
+        script(src='js/bootstrap.min.js')
+
+
+        script(src='/socket.io/socket.io.js')
+        script.
+            io = io.connect()
+            // Emit ready event.
+            io.emit('ready')
+            //console.log('emit ready')
+            io.on('newphoto', function(data) {
+                console.log("photoid: " + data.photoid + " camid: " + data.camid)
+                document.getElementById('lastcamshot').src="/photo/"+data.photoid;
+            });
+            io.on('new message', function(data) {
+                console.log('broadcast');
+            });
+            io.on('announce', function(data) {
+                console.log("New message in announce: " + data.message);
+            })
+        .container
+        .container
+        .row
+            .col-md-4
+                ul.nav.nav-pills.nav-stacked
+                    li.active(role='presentation')
+                        a(href='#') Носовихинское шоссе
+                    li(role='presentation')
+                        a(href='#') А101
+                    li(role='presentation')
+                        a(href='#') Водники
+                p#textdata
+            .col-md-6
+                h3 Фото с камеры ##{currentcamid}
+                img(width='400')#lastcamshot
+            .col-md-2
+                p!= date
+
+
+

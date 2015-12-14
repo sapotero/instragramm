@@ -100,22 +100,32 @@ module.exports = function(app, io){
 
           app.get('/', function(req, res) {
               console.log('/');
-              res.sendfile(__dirname + '/index.html')
-          })
+              //res.sendfile(__dirname + '/index.html')
+              res.render('index', { title: 'Hey', message: 'Hello there!'});
+          });
+
+
+          app.get('/cam/:id', function(req, res) {
+              var camid = req.params.id;
+              console.log('/cam/'+camid);
+              var currentdate = new Date();
+              res.render('showcam', { title: 'Фотоматериалы с камеры №'+camid, currentcamid:camid, date: currentdate.getDay() + "/"+currentdate.getMonth()
+              + "/" + currentdate.getFullYear()});
+          });
+
 
           app.post('/upload', function(req, res) {
-              var fstream;
 
               var camId    = req.headers['camid'];
               var token    = req.headers['token'];
               var datetime = req.headers['datetime'];
-              console.log("REQUEST!!!!!!!!!!!!!!!:");
+
               // console.log(req)
+
               console.log("camid: "  + camId);
               console.log("token: "  + token);
               console.log("date: "  + moment(datetime, "YYYY:MM:DD HH:mm:ss"));
               console.log(req.files);
-
               req.busboy.on('field', function(fieldname, val, fieldnameTruncated, valTruncated, encoding, mimetype) {
                 console.log('----->  Field [' +  fieldname + ']: value: ' + inspect(val));
               });
