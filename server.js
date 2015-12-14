@@ -1,8 +1,9 @@
-
 var busboy = require('connect-busboy');
 app = require('express.io')();
-
+var express = require('express');
 app.http().io();
+
+
 
 var options = {
   dotfiles: 'ignore',
@@ -15,6 +16,8 @@ var options = {
     res.set('x-timestamp', Date.now());
   }
 }
+
+
 
 app.use(express.static('public', options));
 
@@ -29,3 +32,6 @@ app.listen(8080)
 app.set('view engine', 'jade');
 
 app.listen(8080);
+
+console.log('Starting.....');
+
