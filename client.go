@@ -99,7 +99,7 @@ func main() {
     for _, f := range files {
         fmt.Println( "./images/"+f.Name())
         Upload("http://192.168.46.73:3000/upload", "./images/"+f.Name())
-        timer := time.NewTimer(time.Second * 10)
+        timer := time.NewTimer(time.Second * 3)
         <-timer.C
     }
 }

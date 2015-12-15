@@ -98,8 +98,8 @@ func main() {
     files, _ := ioutil.ReadDir("./images")
     for _, f := range files {
         fmt.Println( "./images/"+f.Name())
-        Upload("http://localhost:30030/upload", "./images/"+f.Name())
-        timer := time.NewTimer(time.Second * 10)
+        Upload("http://localhost:8080/upload", "./images/"+f.Name())
+        timer := time.NewTimer(time.Second * 3)
         <-timer.C
     }
 }

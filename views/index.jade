@@ -7,40 +7,52 @@ doctype html
   html.no-js.lt-ie9  
 // [if gt IE 8] <!
 html.no-js
-    // <![endif]
-    head
-        meta(charset='utf-8')
-        meta(http-equiv='X-UA-Compatible', content='IE=edge')
-        title
-        meta(name='description', content='')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        // Place favicon.ico and apple-touch-icon.png in the root directory
-    body
-        script(src='/socket.io/socket.io.js')
-        script.
-            io = io.connect()
-            // Emit ready event.
-            io.emit('ready')
-            //console.log('emit ready')
-            io.on('newphoto', function(data) {
-                console.log("photoid: " + data.photoid + " camid: " + data.camid)
-                document.getElementById("cam"+data.camid).src="/photo/"+data.photoid;
-            });
-            io.on('new message', function(data) {
-                console.log('broadcast');
-            });
-            io.on('announce', function(data) {
-                console.log("New message in announce: " + data.message);
-            })
-        //if lt IE 7
-          p.browsehappy
-            | You are using an
-            strong outdated
-            |  browser. Please
-            a(href='http://browsehappy.com/') upgrade your browser
-            |  to improve your experience.
-        // Add your site or application content here
-        h2
-        img#camxx(width='300')
-        img#cam1(width='300')
-        p#textdata
+  // <![endif]
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.js')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/vis/4.10.0/vis.min.css', rel='stylesheet', type='text/css')
+  body
+    h2
+    div#visualization
+    img#xx(width='300', src='')
+    img#CAM54(width='300' , src='')
+    p#textdata
+    script(src='/socket.io/socket.io.js')
+    script.
+      var container = document.getElementById('visualization');
+      var items = new vis.DataSet([]);
+
+      // Configuration for the Timeline
+      var options = {
+        margin: {
+          item: 20,
+          axis: 40
+        }
+      };
+      var timeline = new vis.Timeline(container, items, options);
+
+      io = io.connect()
+      // Emit ready event.
+      io.emit('ready')
+      //console.log('emit ready')
+      io.on('newphoto', function(data) {
+          console.log("photoid: ", data);
+          document.getElementById( data.camid ).src="/photo/"+data.photoid;
+          items.add({
+            id: data.photoid,
+            start: Date.parse(data.date),
+            content: '<img style="margin: 2px; padding: 2px; height: 48px" src="/photo/'+data.photoid+'"/>'
+          });
+          //- content: '<div>Conversation</div><img src="../resources/img/community-users-icon.png"
+      });
+      io.on('new message', function(data) {
+          console.log('broadcast');
+      });
+      io.on('announce', function(data) {
+          console.log("New message in announce: " + data.message);
+      })
