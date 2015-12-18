@@ -13,12 +13,17 @@ import (
   "os"
   "os/signal"
   "time"
-
+  "encoding/json"
   "github.com/gorilla/websocket"
+  "strings"
+  "io"
 )
 
 var addr = flag.String("addr", "localhost:8082", "http service address")
 
+type Message struct {
+  state, action string
+}
 // var STATE  = "init";
 // var ACTION = "";
 
@@ -57,26 +62,44 @@ func main() {
       
       time.Sleep(2 * time.Second)
 
-      switch msg {
-        case "init":
-          c.WriteMessage( websocket.TextMessage, []byte("init") )
-        case "tryAuth":
-          c.WriteMessage( websocket.TextMessage, []byte("auth") )
-        case "ready":
-          c.WriteMessage( websocket.TextMessage, []byte("ready") )
-          c.WriteMessage( websocket.TextMessage, []byte("ping") )
-        case "wait":
-          c.WriteMessage( websocket.TextMessage, []byte("init") )
-        case "ping":
-          c.WriteMessage( websocket.TextMessage, []byte("ping") )
-        case "authError":
-          c.WriteMessage( websocket.TextMessage, []byte("init") )
-        default:
-          log.Println("unrecognized escape character")
+      dec := json.NewDecoder(strings.NewReader( msg ))
+      for {
+        var m Message
+        if err := dec.Decode(&m); err == io.EOF {
+          break
+        } else if err != nil {
+          log.Fatal(err)
+        }
+
+        log.Printf("%s", m);
+        log.Println("%s: %s\n", m.state, m.action)
+
+        switch string(m.state) {
+          case "init":
+            m, err := json.Marshal( Message{ state: "init", action: "init" } )
+            if err != nil {
+                panic (err)
+            }
+            log.Println("***",m)
+            c.WriteMessage( websocket.TextMessage, m)
+          case "tryAuth":
+            c.WriteMessage( websocket.TextMessage, []byte("auth") )
+          case "ready":
+            c.WriteMessage( websocket.TextMessage, []byte("ready") )
+            c.WriteMessage( websocket.TextMessage, []byte("ping") )
+          case "wait":
+            c.WriteMessage( websocket.TextMessage, []byte("init") )
+          case "ping":
+            c.WriteMessage( websocket.TextMessage, []byte("ping") )
+          case "authError":
+            c.WriteMessage( websocket.TextMessage, []byte("init") )
+          default:
+            log.Println("unrecognized escape character")
+        }
+      log.Printf("-> %s", message)
       }
 
 
-      log.Printf("-> %s", message)
     }
   }()
 

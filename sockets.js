@@ -57,7 +57,7 @@ var server = ws.createServer(function (ws) {
 
     machineArray.push(machine);
     
-    ws.sendText("init");
+    ws.sendText( JSON.stringify({ action: 'init', state: 'init' }) );
     
     ws.on("text", function ( data ) {
         console.log( "<- ", data );
@@ -84,7 +84,8 @@ var server = ws.createServer(function (ws) {
             }
             break;
           case 'ping':
-            setTimeout( function(){ ws.sendText("ping") }, 3000 );
+            // пишем в базу состояние камеры
+            ws.sendText("ping");
             break;
           default:
             console.log('default');
@@ -93,7 +94,7 @@ var server = ws.createServer(function (ws) {
     })
     
     ws.on("close", function (code, reason) {
-      console.log("Connection closed")
+      console.log("Connection closed");
       machine.exit(ws, 'EXIT');
 
     })
