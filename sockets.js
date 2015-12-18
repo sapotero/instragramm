@@ -7,7 +7,6 @@ var ws = require("nodejs-websocket"),
 // Scream server example: "hi" -> "HI!!!"
 var server = ws.createServer(function (ws) {
     console.log("New wsection")
-
     var machine = eventum.init({
       initial: 'init',
       events: [
@@ -34,7 +33,11 @@ var server = ws.createServer(function (ws) {
         oninit        : function( event, from, to, ws, data ) {
           console.log( '[*] onInit', event, from, to, data );
         },
-        ontryAuth     : function( event, from, to, ws, data ) { },
+        ontryAuth     : function( event, from, to, ws, data ) {
+          loginCounter++;
+          var result = ( Math.random() ) ? true : false;
+          return result;
+        },
         onmainError   : function( event, from, to, ws, data ) { },
         onauthError   : function( event, from, to, ws, data ) { },
         onphotoError  : function( event, from, to, ws, data ) { },
@@ -49,9 +52,12 @@ var server = ws.createServer(function (ws) {
           console.log( '[*] state', this.current );
         }
       }
-    });
+    }),
+    loginCounter = 0;
+
     machineArray.push(machine);
-    setTimeout( function(){ ws.sendText("PING") }, 3000 );
+    
+    ws.sendText("init");
     
     ws.on("text", function ( data ) {
         console.log( "<- ", data );
@@ -59,12 +65,29 @@ var server = ws.createServer(function (ws) {
         // check
         switch( data ){
           case 'init':
+            machine.init();
+            if ( machine.can('tryAuth') && loginCounter <= 3) {
+              if ( machine.tryAuth() ){
+                ws.sendText("tryAuth");
+              };
+              loginCounter++;
+            } else {
+              ws.sendText("wait");
+            };
             break;
-          case 'PONG':
-            setTimeout( function(){ ws.sendText("PING") }, 3000 );
+          case 'auth':
+            if ( machine.auth() ){
+              ws.sendText("ready");
+            } else {
+              machine.authError();
+              ws.sendText("authError");
+            }
+            break;
+          case 'ping':
+            setTimeout( function(){ ws.sendText("ping") }, 3000 );
             break;
           default:
-            // ping
+            console.log('default');
             break;
         }
     })

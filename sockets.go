@@ -39,7 +39,6 @@ func main() {
   defer c.Close()
 
   done := make(chan struct{})
-
   go func() {
     defer c.Close()
     defer close(done)
@@ -52,9 +51,26 @@ func main() {
       
       msg := string(message)
 
+      
+      
+      
+      
+      time.Sleep(2 * time.Second)
+
       switch msg {
-        case "PING":
-          c.WriteMessage( websocket.TextMessage, []byte("PONG") )
+        case "init":
+          c.WriteMessage( websocket.TextMessage, []byte("init") )
+        case "tryAuth":
+          c.WriteMessage( websocket.TextMessage, []byte("auth") )
+        case "ready":
+          c.WriteMessage( websocket.TextMessage, []byte("ready") )
+          c.WriteMessage( websocket.TextMessage, []byte("ping") )
+        case "wait":
+          c.WriteMessage( websocket.TextMessage, []byte("init") )
+        case "ping":
+          c.WriteMessage( websocket.TextMessage, []byte("ping") )
+        case "authError":
+          c.WriteMessage( websocket.TextMessage, []byte("init") )
         default:
           log.Println("unrecognized escape character")
       }
@@ -94,6 +110,6 @@ func main() {
       }
       c.Close()
       return
-    }
+    } 
   }
 }
